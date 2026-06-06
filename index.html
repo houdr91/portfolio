@@ -193,10 +193,10 @@
     .nav-inner {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       max-width: var(--max-w);
       margin: 0 auto;
       padding: 0 24px;
+      gap: 14px;
     }
 
     .nav-logo {
@@ -206,6 +206,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-shrink: 0;
     }
 
     .nav-logo .bracket { color: var(--accent); }
@@ -229,6 +230,7 @@
       align-items: center;
       gap: 6px;
       list-style: none;
+      margin-left: auto;
     }
 
     .nav-link {
@@ -280,6 +282,120 @@
     .nav-toggle.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
     .nav-toggle.open span:nth-child(2) { opacity: 0; }
     .nav-toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* ============================================================
+       4.5) LANGUAGE SWITCHER
+       ============================================================ */
+    .lang-switcher {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 5px 8px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      backdrop-filter: blur(10px) saturate(160%);
+      -webkit-backdrop-filter: blur(10px) saturate(160%);
+      transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
+      flex-shrink: 0;
+    }
+
+    .lang-switcher:hover {
+      border-color: var(--border-strong);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .lang-btn {
+      position: relative;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-mute);
+      padding: 4px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.08em;
+      transition: color 0.25s var(--ease), background 0.25s var(--ease);
+    }
+
+    .lang-btn::after {
+      content: '';
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      bottom: 1px;
+      height: 1.5px;
+      background: var(--accent);
+      border-radius: 1px;
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+    }
+
+    .lang-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .lang-btn.active {
+      color: var(--accent);
+    }
+
+    .lang-btn.active::after {
+      transform: scaleX(1);
+      box-shadow: 0 0 8px rgba(0, 255, 136, 0.35);
+    }
+
+    .lang-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .lang-divider {
+      width: 1px;
+      height: 12px;
+      background: var(--border-strong);
+      opacity: 0.45;
+    }
+
+    .lang-spinner {
+      position: absolute;
+      right: -22px;
+      top: 50%;
+      width: 12px;
+      height: 12px;
+      margin-top: -6px;
+      border: 1.5px solid rgba(0, 255, 136, 0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      opacity: 0;
+      transform: scale(0.4);
+      transition: opacity 0.2s var(--ease), transform 0.25s var(--ease);
+      pointer-events: none;
+    }
+
+    .lang-switcher.loading .lang-spinner {
+      opacity: 1;
+      animation: lang-spin 0.7s linear infinite;
+    }
+
+    @keyframes lang-spin {
+      from { transform: rotate(0deg) scale(1); }
+      to   { transform: rotate(360deg) scale(1); }
+    }
+
+    /* Fade out/in del contenido al cambiar de idioma */
+    .hero,
+    body > section,
+    body > footer {
+      transition: opacity 0.28s var(--ease);
+    }
+
+    body.lang-fading .hero,
+    body.lang-fading > section,
+    body.lang-fading > footer {
+      opacity: 0;
+    }
 
     /* ============================================================
        5) BOTONES
@@ -903,14 +1019,20 @@
       .nav-cta { margin-left: 0; margin-top: 8px; }
       .nav-cta .btn { width: 100%; justify-content: center; }
 
+      .lang-switcher { margin-left: auto; padding: 4px 6px; gap: 0; }
+      .lang-btn { font-size: 0.7rem; padding: 4px 6px; letter-spacing: 0.06em; }
+      .lang-spinner { right: -20px; width: 10px; height: 10px; margin-top: -5px; }
+
       .projects-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 480px) {
       .container { padding: 0 18px; }
-      .nav-inner { padding: 0 18px; }
+      .nav-inner { padding: 0 18px; gap: 8px; }
       .hero { padding-top: 100px; }
       .contact-form { padding: 22px; }
+      .lang-switcher { padding: 3px 5px; }
+      .lang-btn { font-size: 0.68rem; padding: 3px 5px; }
     }
   </style>
 </head>
@@ -946,6 +1068,17 @@
           </a>
         </li>
       </ul>
+
+      <div class="lang-switcher" id="langSwitcher" role="group" aria-label="Selector de idioma">
+        <button type="button" class="lang-btn" data-lang="ES" aria-label="Español" aria-pressed="false">ES</button>
+        <span class="lang-divider" aria-hidden="true"></span>
+        <button type="button" class="lang-btn active" data-lang="EN" aria-label="English" aria-pressed="true">EN</button>
+        <span class="lang-divider" aria-hidden="true"></span>
+        <button type="button" class="lang-btn" data-lang="DE" aria-label="Deutsch" aria-pressed="false">DE</button>
+        <span class="lang-divider" aria-hidden="true"></span>
+        <button type="button" class="lang-btn" data-lang="FR" aria-label="Français" aria-pressed="false">FR</button>
+        <span class="lang-spinner" aria-hidden="true"></span>
+      </div>
 
       <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -1588,11 +1721,21 @@
     /* ============================================================
        9.5) TYPEWRITER: nombre + rol
        ============================================================ */
-    function typeInto(el, text, speed, onDone) {
+    const TYPE_NAME_SRC = 'Houd Regrag.';
+    const TYPE_ROLES_SRC = [
+      ' técnico smx · soporte y administración',
+      ' técnico smx · redes y sistemas',
+      ' técnico smx · open to work'
+    ];
+
+    let typewriterToken = 0;
+
+    function typeInto(el, text, speed, token, onDone) {
       let i = 0;
       el.textContent = '';
       el.classList.add('typing');
       const tick = () => {
+        if (token !== typewriterToken) { el.classList.remove('typing'); return; }
         if (i < text.length) {
           el.textContent += text.charAt(i++);
           setTimeout(tick, speed);
@@ -1607,20 +1750,31 @@
     const nameEl = document.getElementById('nameType');
     const typeEl = document.getElementById('typeText');
 
-    if (nameEl && typeEl) {
-      typeInto(nameEl, 'Houd Regrag.', 90, () => {
+    function startTypewriter(name, roles) {
+      if (!nameEl || !typeEl) return;
+      typewriterToken++;
+      const myToken = typewriterToken;
+
+      typeInto(nameEl, name, 90, myToken, () => {
         setTimeout(() => {
-          typeInto(typeEl, ' técnico smx · soporte y administración', 38, () => {
+          if (myToken !== typewriterToken) return;
+          typeInto(typeEl, roles[0], 38, myToken, () => {
             setTimeout(() => {
-              typeInto(typeEl, ' técnico smx · redes y sistemas', 38, () => {
+              if (myToken !== typewriterToken) return;
+              typeInto(typeEl, roles[1], 38, myToken, () => {
                 setTimeout(() => {
-                  typeInto(typeEl, ' técnico smx · open to work', 38);
+                  if (myToken !== typewriterToken) return;
+                  typeInto(typeEl, roles[2], 38, myToken);
                 }, 1800);
               });
             }, 1800);
           });
         }, 400);
       });
+    }
+
+    if (!document.getElementById('langSwitcher')) {
+      startTypewriter(TYPE_NAME_SRC, TYPE_ROLES_SRC);
     }
 
     /* ============================================================
@@ -1893,6 +2047,209 @@
         }
       });
     });
+
+    /* ============================================================
+       9.15) SELECTOR DE IDIOMA (MyMemory API)
+       ============================================================ */
+    const langSwitcher = document.getElementById('langSwitcher');
+
+    if (langSwitcher) {
+      const SOURCE_LANG = 'es';
+      const DEFAULT_LANG = 'EN';
+      const CACHE_KEY = 'houd_i18n_cache_v1';
+      const CONCURRENCY = 5;
+
+      const EXCLUDED_SELECTORS = [
+        '.nav-logo', '.lang-switcher', '.typewriter', '.hero-title .name',
+        '#nameType', '#typeText', '#particles',
+        '.terminal-bar', '.line:not(.out) .cmd', '.prompt',
+        '.tag', '.project-tags', '.project-num', '.project-title',
+        '.skill-head .pct', '.devlog-inner',
+        '.cursor-dot', '.cursor-ring',
+        '.bracket', '.blink', '.caret', '.arrow', '.chev', '.req',
+        'script', 'style', 'noscript'
+      ];
+
+      let cache = { EN: {}, DE: {}, FR: {} };
+      try {
+        const stored = localStorage.getItem(CACHE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && typeof parsed === 'object') {
+            cache.EN = parsed.EN || {};
+            cache.DE = parsed.DE || {};
+            cache.FR = parsed.FR || {};
+          }
+        }
+      } catch (e) {}
+
+      function saveCache() {
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify(cache)); } catch (e) {}
+      }
+
+      function isExcluded(el) {
+        while (el && el !== document.body) {
+          for (let i = 0; i < EXCLUDED_SELECTORS.length; i++) {
+            try {
+              if (el.matches && el.matches(EXCLUDED_SELECTORS[i])) return true;
+            } catch (e) {}
+          }
+          el = el.parentElement;
+        }
+        return false;
+      }
+
+      function isTranslatable(text) {
+        const t = text.trim();
+        if (t.length < 2) return false;
+        if (!/[a-zA-ZÀ-ÿ]/.test(t)) return false;
+        if (/^[\w.+-]+@[\w.-]+\.\w+$/.test(t)) return false;
+        if (/^https?:\/\//.test(t)) return false;
+        return true;
+      }
+
+      const textNodes = [];
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode(node) {
+            if (!isTranslatable(node.nodeValue)) return NodeFilter.FILTER_REJECT;
+            if (isExcluded(node.parentElement)) return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        }
+      );
+      let n;
+      while ((n = walker.nextNode())) {
+        textNodes.push({ node: n, original: n.nodeValue });
+      }
+
+      const decoder = document.createElement('textarea');
+      function decodeEntities(str) {
+        decoder.innerHTML = str;
+        return decoder.value;
+      }
+
+      async function fetchOne(text, target) {
+        const url = 'https://api.mymemory.translated.net/get?q=' +
+          encodeURIComponent(text) + '&langpair=' + SOURCE_LANG + '|' + target.toLowerCase();
+        try {
+          const res = await fetch(url);
+          if (!res.ok) return text;
+          const data = await res.json();
+          const t = data && data.responseData && data.responseData.translatedText;
+          if (!t) return text;
+          return decodeEntities(t);
+        } catch (e) {
+          return text;
+        }
+      }
+
+      async function translateBatch(items, target) {
+        const out = new Array(items.length);
+        let idx = 0;
+        let fetched = 0;
+
+        async function worker() {
+          while (idx < items.length) {
+            const i = idx++;
+            const key = items[i].original.trim();
+            if (cache[target][key] != null) {
+              out[i] = cache[target][key];
+            } else {
+              const t = await fetchOne(key, target);
+              cache[target][key] = t;
+              out[i] = t;
+              fetched++;
+            }
+          }
+        }
+
+        const workers = [];
+        for (let k = 0; k < Math.min(CONCURRENCY, items.length); k++) workers.push(worker());
+        await Promise.all(workers);
+        return { out: out, fetched: fetched };
+      }
+
+      const buttons = langSwitcher.querySelectorAll('.lang-btn');
+      let currentLang = DEFAULT_LANG;
+      let busy = false;
+
+      function setActive(target) {
+        buttons.forEach((b) => {
+          const on = b.dataset.lang === target;
+          b.classList.toggle('active', on);
+          b.setAttribute('aria-pressed', String(on));
+        });
+        document.documentElement.lang = target.toLowerCase();
+      }
+
+      async function switchTo(target) {
+        if (busy || target === currentLang) return;
+        busy = true;
+        buttons.forEach((b) => { b.disabled = true; });
+
+        const isES = target === 'ES';
+        const typeKeys = [TYPE_NAME_SRC].concat(TYPE_ROLES_SRC);
+
+        let needsFetch = false;
+        if (!isES) {
+          needsFetch =
+            textNodes.some((item) => cache[target][item.original.trim()] == null) ||
+            typeKeys.some((s) => cache[target][s.trim()] == null);
+        }
+        if (needsFetch) langSwitcher.classList.add('loading');
+
+        document.body.classList.add('lang-fading');
+        await new Promise((r) => setTimeout(r, 240));
+
+        if (isES) {
+          textNodes.forEach((item) => { item.node.nodeValue = item.original; });
+          startTypewriter(TYPE_NAME_SRC, TYPE_ROLES_SRC);
+        } else {
+          const allItems = textNodes.concat(typeKeys.map((s) => ({ original: s })));
+          const result = await translateBatch(allItems, target);
+
+          textNodes.forEach((item, i) => {
+            const orig = item.original;
+            const leading = orig.match(/^\s*/)[0];
+            const trailing = orig.match(/\s*$/)[0];
+            item.node.nodeValue = leading + String(result.out[i]).trim() + trailing;
+          });
+
+          const off = textNodes.length;
+          const tName = String(result.out[off] || TYPE_NAME_SRC).trim();
+          const tRoles = TYPE_ROLES_SRC.map((src, i) => {
+            let r = String(result.out[off + 1 + i] || src).trim();
+            if (!r.startsWith(' ')) r = ' ' + r;
+            return r;
+          });
+          startTypewriter(tName, tRoles);
+
+          if (result.fetched > 0) saveCache();
+        }
+
+        setActive(target);
+        currentLang = target;
+
+        await new Promise((r) => setTimeout(r, 30));
+        document.body.classList.remove('lang-fading');
+        langSwitcher.classList.remove('loading');
+        buttons.forEach((b) => { b.disabled = false; });
+        busy = false;
+      }
+
+      buttons.forEach((b) => {
+        b.addEventListener('click', () => switchTo(b.dataset.lang));
+      });
+
+      setActive(DEFAULT_LANG);
+      setTimeout(() => {
+        currentLang = '__init__';
+        switchTo(DEFAULT_LANG);
+      }, 120);
+    }
   })();
   </script>
 </body>
