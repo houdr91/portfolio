@@ -776,6 +776,333 @@
     .devlog-inner .ts::before { content: '$ '; color: var(--accent); }
 
     /* ============================================================
+       8.6) PROJECT CARD — FEATURED (AskDocs)
+       ============================================================ */
+    .project-card--featured {
+      grid-column: span 2;
+      padding: 34px 34px 30px;
+      background:
+        linear-gradient(155deg, var(--surface) 0%, rgba(99, 102, 241, 0.05) 45%, var(--surface) 100%);
+    }
+
+    .featured-body {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 32px;
+      margin: 26px 0 28px;
+      padding: 24px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      transform: translateZ(20px);
+    }
+
+    .featured-section { min-width: 0; }
+
+    .featured-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      margin: 0 0 16px;
+      opacity: 0.9;
+    }
+
+    .featured-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .stack-item {
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--indigo);
+      border-radius: 8px;
+      font-size: 0.86rem;
+      color: var(--text-dim);
+      line-height: 1.55;
+      transition: background 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.25s var(--ease);
+    }
+    .stack-item:hover {
+      background: rgba(99, 102, 241, 0.07);
+      border-color: rgba(99, 102, 241, 0.4);
+      transform: translateX(3px);
+    }
+
+    .stack-key {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--indigo);
+      margin-bottom: 5px;
+      letter-spacing: 0.02em;
+    }
+
+    .featured-features {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+    .featured-features li {
+      position: relative;
+      padding-left: 22px;
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+    .featured-features li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .featured-features li strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .featured-footer {
+      display: flex;
+      justify-content: flex-end;
+      transform: translateZ(30px);
+    }
+
+    @media (max-width: 960px) {
+      .project-card--featured { grid-column: span 1; padding: 30px; }
+      .featured-body { grid-template-columns: 1fr; gap: 24px; }
+    }
+
+    @media (max-width: 480px) {
+      .project-card--featured { padding: 24px 22px; }
+      .featured-footer { justify-content: stretch; }
+      .featured-footer .btn { width: 100%; justify-content: center; }
+    }
+
+    /* ============================================================
+       8.5) MODAL — PROCESO DE CONSTRUCCIÓN
+       ============================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(5, 5, 10, 0.72);
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.32s var(--ease);
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      position: relative;
+      width: 100%;
+      max-width: 760px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      padding: 44px 44px 36px;
+      background:
+        linear-gradient(180deg, rgba(20, 20, 30, 0.92) 0%, rgba(10, 10, 16, 0.95) 100%);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(0, 255, 136, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      transform: translateY(24px) scale(0.97);
+      opacity: 0;
+      transition: transform 0.42s var(--ease), opacity 0.32s var(--ease);
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .modal::-webkit-scrollbar { width: 8px; }
+    .modal::-webkit-scrollbar-track { background: transparent; }
+    .modal::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 100px;
+    }
+    .modal::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 136, 0.3); }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      color: var(--text-dim);
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      transition: color 0.2s var(--ease), background 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.2s var(--ease);
+    }
+    .modal-close:hover {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: rgba(0, 255, 136, 0.3);
+      transform: rotate(90deg);
+    }
+
+    .modal-header { margin-bottom: 36px; }
+
+    .modal-title {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      margin: 10px 0 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .modal-subtitle {
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.86rem;
+      margin: 0;
+    }
+
+    /* Timeline vertical */
+    .process-timeline {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      position: relative;
+    }
+
+    .process-timeline::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 18px;
+      bottom: 18px;
+      width: 2px;
+      background: linear-gradient(180deg,
+        var(--accent) 0%,
+        rgba(0, 255, 136, 0.35) 50%,
+        rgba(0, 255, 136, 0.08) 100%);
+      border-radius: 1px;
+    }
+
+    .process-step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 20px;
+      padding-bottom: 34px;
+    }
+    .process-step:last-child { padding-bottom: 0; }
+
+    .step-marker {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      background: var(--bg-soft);
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      color: var(--accent);
+      box-shadow:
+        0 0 0 5px rgba(10, 10, 15, 1),
+        0 0 0 6px rgba(0, 255, 136, 0.18),
+        0 0 14px rgba(0, 255, 136, 0.18);
+      z-index: 1;
+    }
+    .step-marker svg { display: block; }
+
+    .step-body { padding-top: 2px; }
+
+    .step-num {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      margin-bottom: 6px;
+    }
+
+    .step-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.02rem;
+      color: var(--text);
+      font-weight: 600;
+      margin: 0 0 8px;
+      letter-spacing: -0.005em;
+    }
+
+    .step-desc {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      margin: 0;
+      line-height: 1.65;
+    }
+    .step-desc code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      padding: 1px 6px;
+      background: rgba(0, 255, 136, 0.08);
+      border: 1px solid rgba(0, 255, 136, 0.18);
+      border-radius: 4px;
+      color: var(--accent);
+    }
+
+    .step-code {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: rgba(0, 0, 0, 0.45);
+      border-left: 2px solid var(--accent);
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .step-code-prompt { color: var(--accent); margin-right: 8px; }
+
+    /* Reveal en cascada al abrir */
+    .modal-overlay.open .process-step {
+      animation: step-in 0.55s var(--ease) both;
+    }
+    .modal-overlay.open .process-step:nth-child(1) { animation-delay: 0.08s; }
+    .modal-overlay.open .process-step:nth-child(2) { animation-delay: 0.16s; }
+    .modal-overlay.open .process-step:nth-child(3) { animation-delay: 0.24s; }
+    .modal-overlay.open .process-step:nth-child(4) { animation-delay: 0.32s; }
+    .modal-overlay.open .process-step:nth-child(5) { animation-delay: 0.40s; }
+
+    @keyframes step-in {
+      from { opacity: 0; transform: translateX(-12px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .modal-footer {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    body.modal-open { overflow: hidden; }
+
+    /* ============================================================
        9) SKILLS
        ============================================================ */
     .skills-grid {
@@ -1024,6 +1351,17 @@
       .lang-spinner { right: -20px; width: 10px; height: 10px; margin-top: -5px; }
 
       .projects-grid { grid-template-columns: 1fr; }
+
+      .modal { padding: 36px 22px 26px; }
+      .modal-close { top: 10px; right: 10px; }
+      .modal-header { margin-bottom: 28px; }
+      .process-step { grid-template-columns: 36px 1fr; gap: 16px; padding-bottom: 28px; }
+      .process-timeline::before { left: 17px; }
+      .step-marker { width: 36px; height: 36px; box-shadow: 0 0 0 4px rgba(10,10,15,1), 0 0 0 5px rgba(0,255,136,0.18); }
+      .step-marker svg { width: 14px; height: 14px; }
+      .step-title { font-size: 0.95rem; }
+      .step-desc { font-size: 0.9rem; }
+      .step-code { font-size: 0.74rem; }
     }
 
     @media (max-width: 480px) {
@@ -1033,6 +1371,10 @@
       .contact-form { padding: 22px; }
       .lang-switcher { padding: 3px 5px; }
       .lang-btn { font-size: 0.68rem; padding: 3px 5px; }
+      .modal-overlay { padding: 12px; }
+      .modal { padding: 32px 18px 22px; border-radius: 12px; }
+      .modal-footer { justify-content: stretch; }
+      .modal-footer .btn { width: 100%; justify-content: center; }
     }
   </style>
 </head>
@@ -1234,24 +1576,16 @@
           </div>
 
           <h3 class="project-title">Portfolio v1</h3>
-          <p class="project-desc">Construido con opencode en Antigravity IDE</p>
+          <p class="project-desc">Construido con opencode en Antigravity IDE. Un único archivo HTML, sin frameworks ni dependencias.</p>
 
           <div class="project-tags">
             <span>HTML</span><span>CSS</span><span>JS</span><span>opencode</span>
           </div>
 
-          <button class="devlog-toggle" data-devlog>
-            dev log
-            <span class="chev">▸</span>
+          <button type="button" class="devlog-toggle" data-modal-open="modalPortfolioProcess">
+            ver proceso completo
+            <span class="chev">→</span>
           </button>
-          <div class="devlog">
-            <div class="devlog-inner">
-              <div class="ts">init repo, scaffold index.html</div>
-              <div class="ts">add glassmorphism nav + custom cursor</div>
-              <div class="ts">particles canvas, typewriter, magnetic btns</div>
-              <div class="ts">3d tilt cards, scroll reveal, polish</div>
-            </div>
-          </div>
         </article>
 
         <!-- ===== Project 02 ===== -->
@@ -1429,6 +1763,57 @@
           </div>
         </article>
 
+        <!-- ===== Project 07 (featured: askdocs) ===== -->
+        <article class="project-card project-card--featured" data-tilt>
+          <div class="project-head">
+            <span class="project-num">07 / askdocs</span>
+          </div>
+
+          <h3 class="project-title">AskDocs</h3>
+          <p class="project-desc">Aplicación web interactiva de una sola página diseñada para analizar y chatear de forma local y privada con documentos de texto (.txt o .md).</p>
+
+          <div class="project-tags">
+            <span>OpenCode</span><span>Gemini 1.5 Flash</span><span>Tailwind</span><span>FileReader API</span>
+          </div>
+
+          <div class="featured-body">
+            <div class="featured-section">
+              <h4 class="featured-label">// stack</h4>
+              <div class="featured-stack">
+                <div class="stack-item">
+                  <span class="stack-key">opencode</span>
+                  Entorno de desarrollo y agente de IA autónomo para la maquetación y la lógica estructural del software.
+                </div>
+                <div class="stack-item">
+                  <span class="stack-key">gemini 1.5 flash</span>
+                  Motor de IA que procesa el contexto de los archivos, responde con velocidad ultrarrápida y genera las preguntas sugeridas.
+                </div>
+                <div class="stack-item">
+                  <span class="stack-key">tailwind</span>
+                  Interfaz responsive, moderna y fluida con animaciones y estados interactivos premium.
+                </div>
+              </div>
+            </div>
+
+            <div class="featured-section">
+              <h4 class="featured-label">// flujo del proyecto</h4>
+              <ul class="featured-features">
+                <li><strong>Dropzone compacta:</strong> panel lateral inteligente con zona de arrastrar y soltar que reacciona visualmente y se oculta tras procesar el archivo en memoria local con la FileReader API.</li>
+                <li><strong>Chat con inyección de contexto:</strong> el contenido del documento se fusiona con la pregunta del usuario para dar respuestas precisas basadas estrictamente en el texto.</li>
+                <li><strong>Sugerencias proactivas:</strong> al subir el archivo, Gemini analiza el texto y devuelve 3 preguntas clave como pastillas interactivas en el chat.</li>
+                <li><strong>Multi-idioma dinámico:</strong> la interfaz se traduce al instante a 4 idiomas y, mediante Prompt Engineering, la IA traduce el documento y responde de forma nativa en el idioma elegido por el usuario.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="featured-footer">
+            <a href="https://askdocs-nu.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn-primary magnetic" data-magnetic>
+              probar askdocs en vivo
+              <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
       </div>
     </div>
   </section>
@@ -1597,6 +1982,104 @@
       <span>houd.dev — todos los derechos reservados</span>
     </div>
   </footer>
+
+  <!-- ============================================================
+       9) MODAL — PROCESO DE CONSTRUCCIÓN DEL PORTFOLIO
+       ============================================================ -->
+  <div class="modal-overlay" id="modalPortfolioProcess" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalPortfolioTitle">
+    <div class="modal" role="document">
+      <button type="button" class="modal-close" aria-label="Cerrar modal" data-modal-close>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <header class="modal-header">
+        <span class="section-label">// portfolio v1 / build process</span>
+        <h2 id="modalPortfolioTitle" class="modal-title">Cómo se construyó este portfolio</h2>
+        <p class="modal-subtitle">5 pasos, desde la terminal hasta producción.</p>
+      </header>
+
+      <ol class="process-timeline">
+
+        <li class="process-step">
+          <div class="step-marker" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </div>
+          <div class="step-body">
+            <span class="step-num">// 01</span>
+            <h3 class="step-title">Instalar opencode y abrirlo en Antigravity IDE</h3>
+            <p class="step-desc">
+              opencode es un agente de IA de código abierto que se ejecuta directamente desde la terminal.
+              La instalación es un único comando y, una vez listo, basta con lanzarlo desde la terminal integrada de Antigravity IDE para tenerlo trabajando dentro del propio editor.
+            </p>
+            <pre class="step-code" data-no-translate><span class="step-code-prompt">$</span>curl -fsSL https://opencode.ai/install | bash</pre>
+          </div>
+        </li>
+
+        <li class="process-step">
+          <div class="step-marker" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </div>
+          <div class="step-body">
+            <span class="step-num">// 02</span>
+            <h3 class="step-title">Diseñar los prompts con Claude</h3>
+            <p class="step-desc">
+              Antes de escribir una sola línea de código, utilicé Claude (claude.ai) para redactar prompts precisos y detallados que indicasen a opencode qué construir exactamente: diseño, secciones, efectos, paleta de colores y tipografía.
+              La clave fue dejar muy poco margen a la improvisación: cuanto más específico es el prompt, más predecible y coherente es el resultado del agente.
+            </p>
+          </div>
+        </li>
+
+        <li class="process-step">
+          <div class="step-marker" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <div class="step-body">
+            <span class="step-num">// 03</span>
+            <h3 class="step-title">Construir la web con opencode</h3>
+            <p class="step-desc">
+              Con los prompts preparados, opencode generó el <code>index.html</code> completo con todo el CSS y el JavaScript embebidos en el mismo archivo.
+              Un único fichero, sin frameworks, sin dependencias y sin paso de build: estética dark terminal con glassmorphism, cursor personalizado, partículas animadas, typewriter, cards con efecto tilt 3D y formulario de contacto integrado.
+            </p>
+          </div>
+        </li>
+
+        <li class="process-step">
+          <div class="step-marker" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          </div>
+          <div class="step-body">
+            <span class="step-num">// 04</span>
+            <h3 class="step-title">Crear el repositorio en GitHub</h3>
+            <p class="step-desc">
+              El proyecto se subió a GitHub usando los comandos de git que el propio opencode ejecutó desde la terminal: init, add, commit y push.
+              Tener el repo público sirve además como historial vivo de cada iteración del agente.
+            </p>
+          </div>
+        </li>
+
+        <li class="process-step">
+          <div class="step-marker" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 22 20 2 20"/></svg>
+          </div>
+          <div class="step-body">
+            <span class="step-num">// 05</span>
+            <h3 class="step-title">Desplegar en Vercel</h3>
+            <p class="step-desc">
+              Por último, conecté el repositorio de GitHub con Vercel. A partir de ese momento, cada push a la rama <code>main</code> dispara un despliegue automático y actualiza la web en producción en cuestión de segundos, sin tener que tocar ningún panel.
+            </p>
+          </div>
+        </li>
+
+      </ol>
+
+      <footer class="modal-footer">
+        <a href="#" target="_blank" rel="noopener" class="btn btn-primary magnetic" data-magnetic>
+          ver en vivo
+          <span class="arrow">→</span>
+        </a>
+      </footer>
+    </div>
+  </div>
 
   <!-- ============================================================
        9) JAVASCRIPT
@@ -2064,9 +2547,11 @@
         '#nameType', '#typeText', '#particles',
         '.terminal-bar', '.line:not(.out) .cmd', '.prompt',
         '.tag', '.project-tags', '.project-num', '.project-title',
+        '.stack-key', '.featured-label',
         '.skill-head .pct', '.devlog-inner',
         '.cursor-dot', '.cursor-ring',
         '.bracket', '.blink', '.caret', '.arrow', '.chev', '.req',
+        '.step-code', '[data-no-translate]', 'code',
         'script', 'style', 'noscript'
       ];
 
@@ -2250,6 +2735,51 @@
         switchTo(DEFAULT_LANG);
       }, 120);
     }
+
+    /* ============================================================
+       9.16) MODAL — apertura, cierre, focus, scroll lock
+       ============================================================ */
+    const modalOverlays = document.querySelectorAll('.modal-overlay');
+
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (!modal) return;
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
+      const closeBtn = modal.querySelector('.modal-close');
+      if (closeBtn) setTimeout(() => closeBtn.focus(), 120);
+    }
+
+    function closeModal(modal) {
+      if (!modal) return;
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      const anyStillOpen = document.querySelector('.modal-overlay.open');
+      if (!anyStillOpen) document.body.classList.remove('modal-open');
+    }
+
+    document.querySelectorAll('[data-modal-open]').forEach((trigger) => {
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal(trigger.dataset.modalOpen);
+      });
+    });
+
+    modalOverlays.forEach((overlay) => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModal(overlay);
+      });
+      overlay.querySelectorAll('[data-modal-close]').forEach((btn) => {
+        btn.addEventListener('click', () => closeModal(overlay));
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.open').forEach(closeModal);
+      }
+    });
   })();
   </script>
 </body>
