@@ -1429,7 +1429,8 @@
           <p class="contact-detail"><span>disponible →</span> sí, ahora mismo</p>
         </div>
 
-        <form class="contact-form reveal" id="contactForm" novalidate>
+        <form class="contact-form reveal" id="contactForm" action="https://formspree.io/f/mkoaoanw" method="POST" novalidate>
+          <input type="hidden" name="_replyto" id="replyTo" />
           <div class="field">
             <label for="name">nombre <span class="req">*</span></label>
             <input type="text" id="name" name="name" required autocomplete="name" />
@@ -1839,35 +1840,45 @@
     });
 
     /* ============================================================
-       9.13) FORMULARIO DE CONTACTO
+       9.13) FORMULARIO DE CONTACTO → FORMSPREE
+       Valida en cliente; si todo OK deja que el form se envíe
+       de forma nativa a Formspree (sin preventDefault).
+       El campo oculto _replyto se rellena con el email del usuario.
        ============================================================ */
-    const form = document.getElementById('contactForm');
+    const form    = document.getElementById('contactForm');
     const formMsg = document.getElementById('formMsg');
+    const emailIn = document.getElementById('email');
+    const replyTo = document.getElementById('replyTo');
 
     if (form && formMsg) {
+      if (emailIn && replyTo) {
+        const sync = () => { replyTo.value = emailIn.value.trim(); };
+        emailIn.addEventListener('input', sync);
+        sync();
+      }
+
       form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const data = new FormData(form);
+        const data    = new FormData(form);
         const name    = (data.get('name')    || '').toString().trim();
         const email   = (data.get('email')   || '').toString().trim();
         const message = (data.get('message') || '').toString().trim();
 
         if (!name || !email || !message) {
+          e.preventDefault();
           formMsg.style.color = '#ff6b6b';
           formMsg.textContent = '✗ completa todos los campos';
           return;
         }
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          e.preventDefault();
           formMsg.style.color = '#ff6b6b';
           formMsg.textContent = '✗ email no válido';
           return;
         }
 
+        if (replyTo) replyTo.value = email;
         formMsg.style.color = 'var(--accent)';
-        formMsg.textContent = '✓ mensaje enviado · te respondo pronto';
-        form.reset();
-
-        setTimeout(() => { formMsg.textContent = ''; }, 5000);
+        formMsg.textContent = '✓ enviando...';
       });
     }
 
